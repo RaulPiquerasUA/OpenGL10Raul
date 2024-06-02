@@ -11,6 +11,7 @@ import com.japg.mastermoviles.opengl10.util.TextResourceReader;
 import com.japg.mastermoviles.opengl10.util.TextureHelper;
 
 import java.nio.Buffer;
+import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -103,9 +104,9 @@ public class OpenGLRenderer implements Renderer {
 	public OpenGLRenderer(Context context) {
 		this.context = context;
 		obj3DSBody = new Resource3DSReader();
-		obj3DSBody.read3DSFromResource(context, R.raw.mono);
+		obj3DSBody.read3DSFromResource(context, R.raw.cuerpo);
 		obj3DSHead = new Resource3DSReader();
-		obj3DSHead.read3DSFromResource(context, R.raw.batmobile);
+		obj3DSHead.read3DSFromResource(context, R.raw.cabeza);
 	}
 
 	@Override
@@ -180,7 +181,7 @@ public class OpenGLRenderer implements Renderer {
 
 		// Dibujar el cuerpo
 		setIdentityM(modelMatrixBody, 0);
-		translateM(modelMatrixBody, 0, 0f, 0.0f, -7.0f * scaleFactor);
+		translateM(modelMatrixBody, 0, 0f, 0f, -20.0f * scaleFactor);
 		rotateM(modelMatrixBody, 0, accumulatedRY, 0f, 1f, 0f);
 		rotateM(modelMatrixBody, 0, accumulatedRX, 1f, 0f, 0f);
 		multiplyMM(MVP, 0, projectionMatrix, 0, modelMatrixBody, 0);
@@ -194,20 +195,22 @@ public class OpenGLRenderer implements Renderer {
 		glUniform1f(uTextureUnitLocation, 0);
 
 		for (int i = 0; i < obj3DSBody.numMeshes; i++) {
-			final Buffer position = obj3DSBody.dataBuffer[i].position(0);
-			glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, obj3DSBody.dataBuffer[i]);
-			obj3DSBody.dataBuffer[i].position(POSITION_COMPONENT_COUNT);
-			glVertexAttribPointer(aNormalLocation, NORMAL_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, obj3DSBody.dataBuffer[i]);
-			obj3DSBody.dataBuffer[i].position(POSITION_COMPONENT_COUNT + NORMAL_COMPONENT_COUNT);
-			glVertexAttribPointer(aUVLocation, UV_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, obj3DSBody.dataBuffer[i]);
-			glDrawArrays(GL_TRIANGLES, 0, obj3DSBody.numVertices[i]);
+			Buffer buffer = obj3DSBody.dataBuffer[i];
+			int vertexCount = obj3DSBody.numVertices[i];
+			buffer.position(0);
+			glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, buffer);
+			buffer.position(POSITION_COMPONENT_COUNT);
+			glVertexAttribPointer(aNormalLocation, NORMAL_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, buffer);
+			buffer.position(POSITION_COMPONENT_COUNT + NORMAL_COMPONENT_COUNT);
+			glVertexAttribPointer(aUVLocation, UV_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, buffer);
+			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 		}
 
 		// Dibujar la cabeza
 		setIdentityM(modelMatrixHead, 0);
 		multiplyMM(modelMatrixHead, 0, modelMatrixBody, 0, modelMatrixHead, 0);
 		translateM(modelMatrixHead, 0, 0f, 0.5f, 0f);
-		rotateM(modelMatrixHead, 0, headRotationY, 0f, 1f, 0f);
+		rotateM(modelMatrixHead, 0, headRotationY, 0f, 0f, 1f);
 		multiplyMM(MVP, 0, projectionMatrix, 0, modelMatrixHead, 0);
 
 		glUniformMatrix4fv(uMVPMatrixLocation, 1, false, MVP, 0);
@@ -215,13 +218,15 @@ public class OpenGLRenderer implements Renderer {
 		glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 
 		for (int i = 0; i < obj3DSHead.numMeshes; i++) {
-			final Buffer position = obj3DSHead.dataBuffer[i].position(0);
-			glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, obj3DSHead.dataBuffer[i]);
-			obj3DSHead.dataBuffer[i].position(POSITION_COMPONENT_COUNT);
-			glVertexAttribPointer(aNormalLocation, NORMAL_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, obj3DSHead.dataBuffer[i]);
-			obj3DSHead.dataBuffer[i].position(POSITION_COMPONENT_COUNT + NORMAL_COMPONENT_COUNT);
-			glVertexAttribPointer(aUVLocation, UV_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, obj3DSHead.dataBuffer[i]);
-			glDrawArrays(GL_TRIANGLES, 0, obj3DSHead.numVertices[i]);
+			Buffer buffer = obj3DSHead.dataBuffer[i];
+			int vertexCount = obj3DSHead.numVertices[i];
+			buffer.position(0);
+			glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, buffer);
+			buffer.position(POSITION_COMPONENT_COUNT);
+			glVertexAttribPointer(aNormalLocation, NORMAL_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, buffer);
+			buffer.position(POSITION_COMPONENT_COUNT + NORMAL_COMPONENT_COUNT);
+			glVertexAttribPointer(aUVLocation, UV_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, buffer);
+			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 		}
 	}
 
