@@ -6,6 +6,7 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -117,6 +118,12 @@ public class OpenGLActivity extends AppCompatActivity {
 				RelativeLayout.LayoutParams.WRAP_CONTENT
 		);
 		seekBarLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+		int marginBottomInPx = (int) TypedValue.applyDimension(
+				TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+
+		seekBarLayoutParams.setMargins(0, 0, 0, marginBottomInPx);
+		seekBar.setLayoutParams(seekBarLayoutParams);
 		seekBar.setLayoutParams(seekBarLayoutParams);
 
 		seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

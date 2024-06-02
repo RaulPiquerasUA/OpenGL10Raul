@@ -127,7 +127,7 @@ public class OpenGLRenderer implements Renderer {
 		if (LoggerConfig.ON) {
 			Log.w(TAG, "Max. Texture Image Units: " + maxTextureImageUnits[0]);
 		}
-		texture = TextureHelper.loadTexture(context, R.drawable.mono_tex);
+		texture = TextureHelper.loadTexture(context, R.drawable.green);
 
 		if (maxVertexTextureImageUnits[0] > 0) {
 			vertexShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.specular_vertex_shader);
